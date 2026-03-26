@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.local
+node_modules/
+dist/
+*.js.map
+*.d.ts
+.DS_Store
