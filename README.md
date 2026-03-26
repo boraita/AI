@@ -36,6 +36,14 @@ Servidor MCP completo para scripture.api.bible + helloao.org + OpenBible.info.
 ### `mcp/wordpress/`
 _(próximamente)_
 
+## MCPs de terceros recomendados
+
+| Nombre | Repo | Descripción | Instalación |
+|--------|------|-------------|-------------|
+| **theologai** | [TJ-Frederick/TheologAI](https://github.com/TJ-Frederick/TheologAI) | Comentarios, léxicos griego/hebreo, textos clásicos, concordancias | `npm install` |
+| **kairos_codex** | [batson-j/kairos_codex_mcp_server](https://github.com/batson-j/kairos_codex_mcp_server) | Traducciones vía bible.helloao.org | `pip install -r requirements.txt` |
+| **LogosBibleSoftwareMCP** | [robrawks/LogosBibleSoftwareMCP](https://github.com/robrawks/LogosBibleSoftwareMCP) | Integración con Logos Bible Software (requiere Logos instalado) | `npm install` |
+
 ## Configuración rápida
 
 ```bash
