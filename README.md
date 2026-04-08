@@ -64,9 +64,8 @@ claude mcp add apibible -s user \
 # OpenCode — añadir a ~/.config/opencode/config.json:
 # "apibible": {
 #   "type": "local",
-#   "command": "/ruta/al/venv/bin/python3",
-#   "args": ["/ruta/al/server.py"],
-#   "env": { "API_BIBLE_KEY": "tu_api_key" },
+#   "command": ["/ruta/al/venv/bin/python3", "/ruta/al/server.py"],
+#   "environment": { "API_BIBLE_KEY": "tu_api_key" },
 #   "enabled": true
 # }
 ```

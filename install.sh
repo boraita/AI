@@ -103,9 +103,8 @@ with open(config_path, "r") as f:
 config.setdefault("mcp", {})
 config["mcp"]["apibible"] = {
     "type": "local",
-    "command": "$MCP_BIBLE_PYTHON",
-    "args": ["$MCP_BIBLE_DIR/server.py"],
-    "env": {
+    "command": ["$MCP_BIBLE_PYTHON", "$MCP_BIBLE_DIR/server.py"],
+    "environment": {
         "API_BIBLE_KEY": "$API_BIBLE_KEY"
     },
     "enabled": True
