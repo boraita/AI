@@ -584,5 +584,80 @@ def deep_study(
     return result
 
 
+# ── BIBLIA API (Faithlife/Logos) ───────────────────────────────────────────────
+
+BIBLIA_KEY = os.getenv("BIBLIA_API_KEY", "")
+BIBLIA_BASE = "https://api.biblia.com/v1/bible"
+
+
+def _biblia_get(path: str, params: dict = None):
+    url = f"{BIBLIA_BASE}{path}"
+    p = {**(params or {}), "key": BIBLIA_KEY}
+    response = httpx.get(url, params=p, timeout=15)
+    response.raise_for_status()
+    ct = response.headers.get("content-type", "")
+    return response.json() if "json" in ct else response.text
+
+
+@mcp.tool()
+def biblia_get_passage(bible: str, passage: str, style: str = "oneVersePerLine") -> dict:
+    """Get Bible passage text from Biblia API (Faithlife/Logos).
+    Provides access to LEB (Lexham English Bible) and other Faithlife translations.
+
+    Args:
+        bible: Bible ID (e.g. 'LEB', 'KJV', 'ASV', 'DARBY', 'YLT', 'WEB')
+        passage: Passage reference (e.g. 'John3.16', 'Gen1.1-3', 'Ps23')
+        style: Output style: 'oneVersePerLine', 'fullyFormatted', 'simpleParagraphs'
+    """
+    if not BIBLIA_KEY:
+        return {"error": "BIBLIA_API_KEY not configured"}
+    text = _biblia_get(f"/content/{bible}.txt", {"passage": passage, "style": style, "formatting": "character"})
+    return {"bible": bible, "passage": passage, "text": text}
+
+
+@mcp.tool()
+def biblia_search(bible: str, query: str, mode: str = "verse", limit: int = 10) -> dict:
+    """Search Bible text using Biblia API (Faithlife/Logos).
+
+    Args:
+        bible: Bible ID (e.g. 'LEB', 'KJV')
+        query: Search terms
+        mode: 'verse' for exact words or 'fuzzy' for semantic search
+        limit: Max results (default 10)
+    """
+    if not BIBLIA_KEY:
+        return {"error": "BIBLIA_API_KEY not configured"}
+    data = _biblia_get(f"/search/{bible}", {"query": query, "mode": mode, "limit": limit, "preview": "text"})
+    return {
+        "total": data.get("total", 0),
+        "query": query,
+        "results": [{"passage": r.get("passage"), "preview": r.get("preview", "")} for r in data.get("results", [])]
+    }
+
+
+@mcp.tool()
+def biblia_find_bibles(query: str = "") -> list:
+    """List Bible translations available in Biblia API (Faithlife/Logos).
+    Includes LEB and other Faithlife-specific translations not in API.Bible.
+
+    Args:
+        query: Filter by name or abbreviation (empty = list all)
+    """
+    if not BIBLIA_KEY:
+        return [{"error": "BIBLIA_API_KEY not configured"}]
+    params = {"query": query} if query else {}
+    data = _biblia_get("/find", params)
+    return [
+        {
+            "id": b.get("bible"),
+            "title": b.get("title"),
+            "abbreviation": b.get("abbreviatedTitle"),
+            "languages": b.get("languages", []),
+            "publishers": b.get("publishers", []),
+        }
+        for b in data.get("bibles", [])
+    ]
+
+
 if __name__ == "__main__":
     mcp.run(transport="stdio")

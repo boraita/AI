@@ -50,10 +50,13 @@ Servidor MCP completo para consulta bíblica usando tres fuentes combinadas:
 - `search_bible` — Búsqueda con fuzzy matching y filtros
 - `list_bibles` / `list_helloao_translations` — Listado de traducciones disponibles
 - `list_audio_bibles` / `get_audio_chapter` — Biblias en audio
+- `biblia_get_passage` — Texto bíblico via Biblia API (Faithlife/Logos), incluye LEB
+- `biblia_search` — Búsqueda en Biblia API con modo exacto o fuzzy
+- `biblia_find_bibles` — Listado de traducciones disponibles en Biblia API
 
 **Instalación manual** (si no usas `install.sh`):
 ```bash
-cd mcp/bible/amshejjinah-bible-mcp
+cd mcp/bible/apibible
 python3 -m venv venv && venv/bin/pip install -r requirements.txt
 
 # Claude Code (global)
@@ -70,13 +73,34 @@ claude mcp add amshejjinah-bible-mcp -s user \
 # }
 ```
 
+### `mcp/logos/LogosBibleSoftwareMCP`
+
+| | |
+|---|---|
+| **Compatibilidad** | Claude Code · OpenCode |
+| **Requisito** | **macOS** + Logos Bible Software instalado en `/Applications/Logos.app` + Node.js |
+| **Requiere** | API key gratuita en [api.biblia.com](https://api.biblia.com) |
+
+Integración con Logos Bible Software a través del proyecto [robrawks/LogosBibleSoftwareMCP](https://github.com/robrawks/LogosBibleSoftwareMCP).
+
+> **Solo macOS.** El MCP usa URL schemes y AppleScript para controlar la app de Logos. En Linux y Windows el `install.sh` lo omite automáticamente con un aviso.
+
+**¿Qué hace si Logos está instalado?**
+El `install.sh` clona el repositorio, compila el servidor Node.js y lo configura globalmente en Claude Code y OpenCode. Solo necesitas ejecutar `./install.sh` y proporcionar tu `BIBLIA_API_KEY`.
+
+**20 herramientas disponibles:**
+- Recuperar texto bíblico (LEB, KJV, ASV, DARBY, YLT, WEB)
+- Abrir pasajes, word studies y comentarios directamente en Logos
+- Buscar en el texto bíblico y obtener referencias cruzadas
+- Navegar la biblioteca personal de Logos
+- Acceder a notas, highlights y planes de lectura propios
+
 ## MCPs de terceros recomendados
 
 | Nombre | Repo | Descripción | Compatibilidad |
 |--------|------|-------------|----------------|
 | **theologai** | [TJ-Frederick/TheologAI](https://github.com/TJ-Frederick/TheologAI) | Comentarios, léxicos griego/hebreo, textos clásicos, concordancias | Claude Code · OpenCode |
 | **kairos_codex** | [batson-j/kairos_codex_mcp_server](https://github.com/batson-j/kairos_codex_mcp_server) | Traducciones vía bible.helloao.org | Claude Code · OpenCode |
-| **LogosBibleSoftwareMCP** | [robrawks/LogosBibleSoftwareMCP](https://github.com/robrawks/LogosBibleSoftwareMCP) | Integración con Logos Bible Software (requiere Logos instalado) | Claude Code |
 
 ## Añadir un nuevo MCP
 
