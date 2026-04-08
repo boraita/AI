@@ -165,8 +165,6 @@ elif [ "$HAS_LOGOS" = false ]; then
     echo -e "  Descarga Logos en: https://www.logos.com/get-started"
 elif [ "$HAS_NODE" = false ]; then
     warn "Logos MCP omitido — Node.js no encontrado (necesario para compilar)"
-elif [ -z "${BIBLIA_API_KEY:-}" ]; then
-    warn "Logos MCP omitido — falta BIBLIA_API_KEY (requerida por Logos MCP)"
 else
     info "Clonando/actualizando LogosBibleSoftwareMCP..."
     mkdir -p "$AI_DIR/mcp/logos"
