@@ -19,7 +19,7 @@ AI/
 ├── install.sh              # Instalador global (ejecutar tras clonar)
 ├── mcp/                    # Servidores MCP
 │   ├── bible/              # Herramientas bíblicas y teológicas
-│   │   └── apibible/       # scripture.api.bible + helloao + OpenBible
+│   │   └── amshejjinah-bible-mcp/       # scripture.api.bible + helloao + OpenBible
 │   ├── wordpress/          # Integración con WordPress (próximamente)
 │   └── utils/              # Utilidades generales (próximamente)
 ├── agents/                 # Agentes especializados (próximamente)
@@ -29,7 +29,7 @@ AI/
 
 ## MCPs disponibles
 
-### `mcp/bible/apibible`
+### `mcp/bible/amshejjinah-bible-mcp`
 
 | | |
 |---|---|
@@ -53,16 +53,16 @@ Servidor MCP completo para consulta bíblica usando tres fuentes combinadas:
 
 **Instalación manual** (si no usas `install.sh`):
 ```bash
-cd mcp/bible/apibible
+cd mcp/bible/amshejjinah-bible-mcp
 python3 -m venv venv && venv/bin/pip install -r requirements.txt
 
 # Claude Code (global)
-claude mcp add apibible -s user \
+claude mcp add amshejjinah-bible-mcp -s user \
   -e API_BIBLE_KEY=tu_api_key \
   -- $(pwd)/venv/bin/python3 $(pwd)/server.py
 
 # OpenCode — añadir a ~/.config/opencode/config.json:
-# "apibible": {
+# "amshejjinah-bible-mcp": {
 #   "type": "local",
 #   "command": ["/ruta/al/venv/bin/python3", "/ruta/al/server.py"],
 #   "environment": { "API_BIBLE_KEY": "tu_api_key" },

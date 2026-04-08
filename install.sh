@@ -56,18 +56,18 @@ if [ -z "${API_BIBLE_KEY:-}" ]; then
             echo "API_BIBLE_KEY=$API_BIBLE_KEY" > "$AI_DIR/.env"
             ok "API_BIBLE_KEY guardada en $AI_DIR/.env"
         else
-            warn "Omitiendo apibible MCP (sin API key)"
+            warn "Omitiendo amshejjinah-bible-mcp MCP (sin API key)"
         fi
     fi
 fi
 
 # =============================================================================
-# MCP: apibible
+# MCP: amshejjinah-bible-mcp
 # Targets: Claude Code, OpenCode
 # =============================================================================
-section "MCP: apibible  [Claude Code | OpenCode]"
+section "MCP: amshejjinah-bible-mcp  [Claude Code | OpenCode]"
 
-MCP_BIBLE_DIR="$AI_DIR/mcp/bible/apibible"
+MCP_BIBLE_DIR="$AI_DIR/mcp/bible/amshejjinah-bible-mcp"
 MCP_BIBLE_PYTHON="$MCP_BIBLE_DIR/venv/bin/python3"
 
 if [ "$HAS_PYTHON" = true ]; then
@@ -83,11 +83,11 @@ if [ "$HAS_PYTHON" = true ]; then
         # ── Claude Code ──────────────────────────────────────────────────────
         if [ "$HAS_CLAUDE" = true ]; then
             info "Configurando para Claude Code (global)..."
-            claude mcp remove apibible -s user 2>/dev/null || true
-            claude mcp add apibible -s user \
+            claude mcp remove amshejjinah-bible-mcp -s user 2>/dev/null || true
+            claude mcp add amshejjinah-bible-mcp -s user \
                 -e API_BIBLE_KEY="$API_BIBLE_KEY" \
                 -- "$MCP_BIBLE_PYTHON" "$MCP_BIBLE_DIR/server.py"
-            ok "apibible → Claude Code (usuario global)"
+            ok "amshejjinah-bible-mcp → Claude Code (usuario global)"
         fi
 
         # ── OpenCode ─────────────────────────────────────────────────────────
@@ -101,7 +101,7 @@ with open(config_path, "r") as f:
     config = json.load(f)
 
 config.setdefault("mcp", {})
-config["mcp"]["apibible"] = {
+config["mcp"]["amshejjinah-bible-mcp"] = {
     "type": "local",
     "command": ["$MCP_BIBLE_PYTHON", "$MCP_BIBLE_DIR/server.py"],
     "environment": {
@@ -114,14 +114,14 @@ with open(config_path, "w") as f:
     json.dump(config, f, indent=2, ensure_ascii=False)
     f.write("\n")
 PYEOF
-            ok "apibible → OpenCode"
+            ok "amshejjinah-bible-mcp → OpenCode"
         fi
 
     else
-        warn "apibible omitido (falta API_BIBLE_KEY)"
+        warn "amshejjinah-bible-mcp omitido (falta API_BIBLE_KEY)"
     fi
 else
-    warn "apibible omitido (Python3 no disponible)"
+    warn "amshejjinah-bible-mcp omitido (Python3 no disponible)"
 fi
 
 # =============================================================================
@@ -143,9 +143,9 @@ printf "%-20s %-15s %-15s\n" "────────────────�
 if [ -n "${API_BIBLE_KEY:-}" ] && [ "$HAS_PYTHON" = true ]; then
     CLAUDE_STATUS=$( [ "$HAS_CLAUDE" = true ] && echo "✓ instalado" || echo "— no disponible" )
     OPENCODE_STATUS=$( [ -f "$OPENCODE_CONFIG" ] && echo "✓ instalado" || echo "— no disponible" )
-    printf "%-20s %-15s %-15s\n" "apibible" "$CLAUDE_STATUS" "$OPENCODE_STATUS"
+    printf "%-20s %-15s %-15s\n" "amshejjinah-bible-mcp" "$CLAUDE_STATUS" "$OPENCODE_STATUS"
 else
-    printf "%-20s %-15s %-15s\n" "apibible" "— omitido" "— omitido"
+    printf "%-20s %-15s %-15s\n" "amshejjinah-bible-mcp" "— omitido" "— omitido"
 fi
 
 echo ""
