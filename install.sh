@@ -186,12 +186,41 @@ else
 
     LOGOS_ENTRY="$LOGOS_MCP_DIR/logos-mcp-server/dist/index.js"
 
+    # ── Auto-detectar rutas de datos de Logos ────────────────────────────
+    LOGOS_DATA_DIR=""
+    LOGOS_CATALOG_DIR=""
+
+    # Buscar en ~/Logos4/Data y ~/Documents/Logos4/Data
+    for BASE in "$HOME/Logos4" "$HOME/Documents/Logos4" "$HOME/Library/Application Support/Logos4"; do
+        if [ -d "$BASE/Data" ]; then
+            # Coger el primer directorio .w14 encontrado
+            W14=$(find "$BASE/Data" -maxdepth 1 -name "*.w14" -type d 2>/dev/null | head -1)
+            if [ -n "$W14" ]; then
+                LOGOS_DATA_DIR="$W14"
+                ok "Logos Data dir detectado: $LOGOS_DATA_DIR"
+            fi
+        fi
+        if [ -d "$BASE/Documents" ]; then
+            W14=$(find "$BASE/Documents" -maxdepth 1 -name "*.w14" -type d 2>/dev/null | head -1)
+            if [ -n "$W14" ]; then
+                LOGOS_CATALOG_DIR="$W14"
+                ok "Logos Catalog dir detectado: $LOGOS_CATALOG_DIR"
+            fi
+        fi
+    done
+
+    if [ -z "$LOGOS_DATA_DIR" ]; then
+        warn "No se pudo auto-detectar LOGOS_DATA_DIR — las herramientas de biblioteca pueden no funcionar"
+    fi
+
     # ── Claude Code ──────────────────────────────────────────────────────
     if [ "$HAS_CLAUDE" = true ]; then
         info "Configurando Logos MCP para Claude Code..."
         claude mcp remove logos-bible-mcp -s user 2>/dev/null || true
         claude mcp add logos-bible-mcp -s user \
-            -e BIBLIA_API_KEY="$BIBLIA_API_KEY" \
+            -e BIBLIA_API_KEY="${BIBLIA_API_KEY:-}" \
+            -e LOGOS_DATA_DIR="$LOGOS_DATA_DIR" \
+            -e LOGOS_CATALOG_DIR="$LOGOS_CATALOG_DIR" \
             -- node "$LOGOS_ENTRY"
         ok "logos-bible-mcp → Claude Code (usuario global)"
     fi
@@ -211,7 +240,9 @@ config["mcp"]["logos-bible-mcp"] = {
     "type": "local",
     "command": ["node", "$LOGOS_ENTRY"],
     "environment": {
-        "BIBLIA_API_KEY": "$BIBLIA_API_KEY"
+        "BIBLIA_API_KEY": "${BIBLIA_API_KEY:-}",
+        "LOGOS_DATA_DIR": "$LOGOS_DATA_DIR",
+        "LOGOS_CATALOG_DIR": "$LOGOS_CATALOG_DIR"
     },
     "enabled": True
 }
