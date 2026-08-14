@@ -23,7 +23,8 @@ AI/
 │   ├── wordpress/          # Integración con WordPress (próximamente)
 │   └── utils/              # Utilidades generales (próximamente)
 ├── agents/                 # Agentes especializados (próximamente)
-├── skills/                 # Skills para Claude Code (próximamente)
+├── skills/                 # Skills para Claude Code
+│   └── ultracode-qa/       # Auditoría QA + UX de una web entera (Workflow paralelo)
 └── docs/                   # Documentación
 ```
 
@@ -101,6 +102,28 @@ El `install.sh` clona el repositorio, compila el servidor Node.js y lo configura
 |--------|------|-------------|----------------|
 | **theologai** | [TJ-Frederick/TheologAI](https://github.com/TJ-Frederick/TheologAI) | Comentarios, léxicos griego/hebreo, textos clásicos, concordancias | Claude Code · OpenCode |
 | **kairos_codex** | [batson-j/kairos_codex_mcp_server](https://github.com/batson-j/kairos_codex_mcp_server) | Traducciones vía bible.helloao.org | Claude Code · OpenCode |
+
+## Skills disponibles
+
+### `skills/ultracode-qa`
+
+| | |
+|---|---|
+| **Compatibilidad** | Claude Code |
+| **Requiere** | Playwright (`python3 -m playwright install chromium`) |
+
+Auditoría completa de QA + UX de una web en marcha, orquestada como "ultracode"
+(un `Workflow` de agentes QA en paralelo). Actúa como QA experto que navega y
+ejercita **todas** las funcionalidades, más UX experto que detecta pitfalls del
+usuario, y produce un informe HTML (Artifact) ordenado por severidad. El acceso
+es vía un usuario de prueba creado con el **dev-login** de la app (único toque
+permitido al backend); el login normal queda fuera de alcance. Controla
+colisiones aislando datos por agente y usa el modelo adecuado por tarea.
+
+**Instalar (uso local con Claude Code):**
+```bash
+cp -R skills/ultracode-qa ~/.claude/skills/
+```
 
 ## Añadir un nuevo MCP
 

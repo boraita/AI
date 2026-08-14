@@ -1,0 +1,106 @@
+<title>QA Audit Report</title>
+<!--
+  Ultracode QA/UX audit report template. Publish via the Artifact tool
+  (load the artifact-design skill first). Theme-aware tokens are defined on
+  bare :root and re-declared for dark. Replace the {{...}} placeholders and
+  the example finding cards with real data. Keep the <title> stable.
+-->
+<style>
+  :root {
+    --bg: #f7f7f8; --surface: #ffffff; --text: #1a1a1e; --muted: #5c5c66;
+    --border: #e3e3e8; --accent: #4f46e5;
+    --blocker: #dc2626; --major: #ea580c; --minor: #ca8a04; --polish: #64748b;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --bg: #131316; --surface: #1c1c21; --text: #ececf1; --muted: #a1a1ab;
+      --border: #2c2c33; --accent: #818cf8;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131316; --surface: #1c1c21; --text: #ececf1; --muted: #a1a1ab;
+    --border: #2c2c33; --accent: #818cf8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.55 system-ui, -apple-system, sans-serif; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 32px 20px 80px; }
+  header h1 { font-size: 1.9rem; margin: 0 0 4px; }
+  header .meta { color: var(--muted); font-size: 0.9rem; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
+    gap: 12px; margin: 24px 0 8px; }
+  .tile { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px; }
+  .tile .n { font-size: 1.8rem; font-weight: 700; }
+  .tile .l { color: var(--muted); font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: .04em; }
+  .verdict { background: var(--surface); border: 1px solid var(--border);
+    border-left: 4px solid var(--accent); border-radius: 12px; padding: 16px 20px;
+    margin: 16px 0 32px; }
+  h2.area { margin: 32px 0 12px; font-size: 1.2rem;
+    border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .card { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px; margin: 12px 0; }
+  .card .head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .card .title { font-weight: 600; }
+  .sev { font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 999px; color: #fff; letter-spacing: .03em; }
+  .sev.blocker { background: var(--blocker); }
+  .sev.major { background: var(--major); }
+  .sev.minor { background: var(--minor); }
+  .sev.polish { background: var(--polish); }
+  .cat { font-size: 0.72rem; color: var(--muted); border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: 999px; }
+  .route { color: var(--muted); font-size: 0.82rem; margin-left: auto; }
+  .card dl { display: grid; grid-template-columns: 90px 1fr; gap: 4px 12px;
+    margin: 12px 0 0; font-size: 0.9rem; }
+  .card dt { color: var(--muted); }
+  .card dd { margin: 0; }
+  .card img { max-width: 100%; border: 1px solid var(--border);
+    border-radius: 8px; margin-top: 12px; }
+  .unconfirmed { opacity: .7; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>QA / UX Audit — {{APP_NAME}}</h1>
+    <div class="meta">{{BASE_URL}} · {{DATE}} · test user via dev-login (normal login not in scope)</div>
+  </header>
+
+  <section class="summary">
+    <div class="tile"><div class="n" style="color:var(--blocker)">{{N_BLOCKER}}</div><div class="l">Blocker</div></div>
+    <div class="tile"><div class="n" style="color:var(--major)">{{N_MAJOR}}</div><div class="l">Major</div></div>
+    <div class="tile"><div class="n" style="color:var(--minor)">{{N_MINOR}}</div><div class="l">Minor</div></div>
+    <div class="tile"><div class="n" style="color:var(--polish)">{{N_POLISH}}</div><div class="l">Polish</div></div>
+    <div class="tile"><div class="n">{{N_AREAS}}</div><div class="l">Areas tested</div></div>
+  </section>
+
+  <div class="verdict"><strong>Verdict:</strong> {{ONE_LINE_HEALTH_VERDICT}}<br>
+    Top blockers: {{TOP_3_BLOCKERS}}</div>
+
+  <!-- Repeat per area. Repeat .card per finding, sorted blocker→polish. -->
+  <h2 class="area">{{AREA_NAME}}</h2>
+
+  <div class="card">
+    <div class="head">
+      <span class="sev blocker">blocker</span>
+      <span class="cat">functional</span>
+      <span class="title">{{FINDING_TITLE}}</span>
+      <span class="route">{{ROUTE}}</span>
+    </div>
+    <dl>
+      <dt>Steps</dt><dd>{{STEPS}}</dd>
+      <dt>Expected</dt><dd>{{EXPECTED}}</dd>
+      <dt>Actual</dt><dd>{{ACTUAL}}</dd>
+    </dl>
+    <img src="{{SCREENSHOT_DATA_URI}}" alt="screenshot of the issue">
+  </div>
+
+  <!-- Findings that failed adversarial verification go here, dimmed. -->
+  <h2 class="area">Unconfirmed (failed re-check)</h2>
+  <div class="card unconfirmed">
+    <div class="head"><span class="sev major">major</span>
+      <span class="title">{{UNCONFIRMED_TITLE}}</span></div>
+    <dl><dt>Note</dt><dd>{{WHY_UNCONFIRMED}}</dd></dl>
+  </div>
+</div>
