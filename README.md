@@ -24,7 +24,8 @@ AI/
 │   └── utils/              # Utilidades generales (próximamente)
 ├── agents/                 # Agentes especializados (próximamente)
 ├── skills/                 # Skills para Claude Code
-│   └── ultracode-qa/       # Auditoría QA + UX de una web entera (Workflow paralelo)
+│   ├── ultracode-qa/       # Auditoría QA + UX de una web entera (Workflow paralelo)
+│   └── webapp-testing/     # Playwright: testing + captura pantalla-por-pantalla (fork Apache-2.0)
 └── docs/                   # Documentación
 ```
 
@@ -124,6 +125,36 @@ colisiones aislando datos por agente y usa el modelo adecuado por tarea.
 ```bash
 cp -R skills/ultracode-qa ~/.claude/skills/
 ```
+
+### `skills/webapp-testing`
+
+| | |
+|---|---|
+| **Compatibilidad** | Claude Code |
+| **Requiere** | Playwright (`python3 -m playwright install chromium`) |
+| **Licencia** | Apache-2.0 (fork del skill built-in con mejoras) |
+
+Toolkit Playwright para interactuar y testear webapps locales. **Fork mejorado**
+del skill built-in: waits robustos (no depende solo de `networkidle`, frágil en
+SPA/PWA) + sección **Screen-by-Screen Capture** que audita una web/PWA pantalla
+por pantalla en 4 capas (visual, árbol de accesibilidad, design tokens,
+network/API) para documentarla o reconstruirla — el equivalente web de
+descompilar una app móvil. Se combina con `ultracode-qa` (mecánica de
+navegación) y con skills de diseño móvil (capa visual+tokens).
+
+```bash
+cp -R skills/webapp-testing ~/.claude/skills/
+```
+
+## Skills de terceros recomendados
+
+Instalar directo desde su repo (no vendoreados aquí; licencia propia de cada uno):
+
+| Nombre | Repo | Descripción |
+|--------|------|-------------|
+| **android-reverse-engineering** | [incogbyte/android-reverse-engineering-claude-skill](https://github.com/incogbyte/android-reverse-engineering-claude-skill) | Descompila APK/AAB/XAPK (jadx/vineflower), mapea pantallas, extrae endpoints, Frida en vivo. Requiere jadx, apktool, dex2jar, bundletool, frida-tools |
+| **iOS-reverse-engineering** | [incogbyte/iOS-reverse-engineering-claude-skill](https://github.com/incogbyte/iOS-reverse-engineering-claude-skill) | IPA/.app, headers Obj-C/Swift, APIs, SDKs. Requiere macOS (ipsw, radare2) |
+| **mobile-app-design** | [awesome-skills/mobile-app-design](https://github.com/awesome-skills/mobile-app-design) | Diseño UI/UX móvil: patrones iOS/Material 3, tokens, accesibilidad; reconstruir UI nativa |
 
 ## Añadir un nuevo MCP
 
