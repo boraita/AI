@@ -74,6 +74,18 @@ if [ -z "${BIBLIA_API_KEY:-}" ]; then
     read -r BIBLIA_API_KEY
 fi
 
+# iPasen (Séneca) — family account login
+IPASEN_CREDENTIALS="$HOME/.config/ipasen-mcp/credentials.env"
+if [ -z "${IPASEN_USER:-}" ] && [ ! -f "$IPASEN_CREDENTIALS" ]; then
+    warn "iPasen credentials not found"
+    echo -n "  iPasen username (or Enter to skip): "
+    read -r IPASEN_USER
+    if [ -n "$IPASEN_USER" ]; then
+        echo -n "  iPasen password: "
+        read -rs IPASEN_PASSWORD; echo
+    fi
+fi
+
 # Guardar keys en .env
 {
     [ -n "${API_BIBLE_KEY:-}" ]  && echo "API_BIBLE_KEY=$API_BIBLE_KEY"
@@ -258,6 +270,44 @@ PYEOF
 fi
 
 # =============================================================================
+# MCP: ipasen-mcp
+# Targets: Claude Code (other clients and OpenClaw: mcp/education/ipasen/CLIENTS.md)
+# Requires: Python >= 3.10
+# =============================================================================
+section "MCP: ipasen-mcp  [Claude Code]"
+
+MCP_IPASEN_DIR="$AI_DIR/mcp/education/ipasen"
+IPASEN_MCP_INSTALLED=false
+PY310=$(for p in python3.13 python3.12 python3.11 python3.10 python3; do
+    command -v "$p" &>/dev/null && "$p" -c 'import sys; sys.exit(sys.version_info < (3, 10))' && command -v "$p" && break
+done)
+
+if [ -n "${IPASEN_USER:-}" ] && [ -n "${IPASEN_PASSWORD:-}" ]; then
+    # Secrets go to a private file, never into the client config.
+    mkdir -p "$(dirname "$IPASEN_CREDENTIALS")" && chmod 700 "$(dirname "$IPASEN_CREDENTIALS")"
+    (umask 077; printf 'IPASEN_USER=%s\nIPASEN_PASSWORD=%s\n' "$IPASEN_USER" "$IPASEN_PASSWORD" > "$IPASEN_CREDENTIALS")
+    ok "iPasen credentials saved to $IPASEN_CREDENTIALS (mode 600)"
+fi
+
+if [ -z "$PY310" ]; then
+    warn "ipasen-mcp skipped (needs Python >= 3.10)"
+elif [ ! -f "$IPASEN_CREDENTIALS" ]; then
+    warn "ipasen-mcp skipped (no iPasen credentials)"
+else
+    info "Installing Python dependencies..."
+    "$PY310" -m venv "$MCP_IPASEN_DIR/venv"
+    "$MCP_IPASEN_DIR/venv/bin/pip" install -q -r "$MCP_IPASEN_DIR/requirements.txt"
+    ok "Dependencies installed in $MCP_IPASEN_DIR/venv"
+
+    if [ "$HAS_CLAUDE" = true ]; then
+        claude mcp remove ipasen-mcp -s user 2>/dev/null || true
+        claude mcp add ipasen-mcp -s user -- "$MCP_IPASEN_DIR/venv/bin/python3" "$MCP_IPASEN_DIR/server.py"
+        ok "ipasen-mcp → Claude Code (user scope)"
+        IPASEN_MCP_INSTALLED=true
+    fi
+fi
+
+# =============================================================================
 # AÑADIR NUEVOS MCPs AQUÍ
 # Copia uno de los bloques anteriores y ajusta:
 #   - section "MCP: nombre  [Claude Code | OpenCode | ...]"
@@ -298,6 +348,10 @@ else
     O="— omitido"
 fi
 printf "%-30s %-18s %-18s\n" "logos-bible-mcp" "$C" "$O"
+
+# ipasen-mcp
+C=$( [ "$IPASEN_MCP_INSTALLED" = true ] && echo "✓ installed" || echo "— skipped" )
+printf "%-30s %-18s %-18s\n" "ipasen-mcp" "$C" "— see CLIENTS.md"
 
 echo ""
 info "Para añadir nuevos MCPs edita este script en la sección marcada"
