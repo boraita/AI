@@ -20,8 +20,6 @@ AI/
 ├── mcp/                    # Servidores MCP
 │   ├── bible/              # Herramientas bíblicas y teológicas
 │   │   └── amshejjinah-bible-mcp/       # scripture.api.bible + helloao + OpenBible
-│   ├── education/
-│   │   └── ipasen/         # iPasen (Séneca, Andalusia): school grades, absences, messages
 │   ├── wordpress/          # Integración con WordPress (próximamente)
 │   └── utils/              # Utilidades generales (próximamente)
 ├── agents/                 # Agentes especializados (próximamente)
@@ -99,24 +97,11 @@ El `install.sh` clona el repositorio, compila el servidor Node.js y lo configura
 - Navegar la biblioteca personal de Logos
 - Acceder a notas, highlights y planes de lectura propios
 
-### `mcp/education/ipasen`
-
-| | |
-|---|---|
-| **Clients** | Claude Code · Claude Desktop · OpenCode · OpenClaw (installer) |
-| **Requires** | Python ≥ 3.10 · an iPasen family account |
-
-Unofficial MCP server for iPasen, the school-tracking platform for families in Andalusia (Spain).
-**Queries**: grades, absences, timetable, teacher notes, authorizations, messages, calendar.
-**Actions** with a mandatory preview and confirmation code (optionally delivered by Telegram so
-the agent never sees it): report/justify absences, answer authorizations, sign documents,
-send/reply to messages, book meetings. Not affiliated with the Junta de Andalucía. Details in
-[`mcp/education/ipasen/README.md`](mcp/education/ipasen/README.md).
-
 ## MCPs de terceros recomendados
 
 | Nombre | Repo | Descripción | Compatibilidad |
 |--------|------|-------------|----------------|
+| **ipasen_mcp** | [boraita/ipasen_mcp](https://github.com/boraita/ipasen_mcp) | iPasen (Séneca, Andalucía): notas, faltas, mensajes del cole y acciones con confirmación; instalador para OpenClaw | Claude Code · Claude Desktop · OpenCode · OpenClaw |
 | **theologai** | [TJ-Frederick/TheologAI](https://github.com/TJ-Frederick/TheologAI) | Comentarios, léxicos griego/hebreo, textos clásicos, concordancias | Claude Code · OpenCode |
 | **kairos_codex** | [batson-j/kairos_codex_mcp_server](https://github.com/batson-j/kairos_codex_mcp_server) | Traducciones vía bible.helloao.org | Claude Code · OpenCode |
 
